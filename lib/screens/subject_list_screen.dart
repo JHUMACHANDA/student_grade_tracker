@@ -30,12 +30,23 @@ class SubjectListScreen extends StatelessWidget {
 
         if (subjects.isEmpty) {
           return Center(
-            child: Text(
-              'No subjects added yet.\nGo to "Add Subject" to get started.',
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface,
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.menu_book_outlined,
+                  size: 56,
+                  color: theme.colorScheme.primary.withOpacity(0.5),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'No subjects added yet.\nGo to "Add" to get started.',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+              ],
             ),
           );
         }
@@ -45,6 +56,7 @@ class SubjectListScreen extends StatelessWidget {
           itemCount: subjects.length,
           itemBuilder: (context, index) {
             final Subject subject = subjects[index];
+            final gradeColor = _gradeColor(context, subject.grade);
 
             return Dismissible(
               key: ValueKey(subject),
@@ -55,7 +67,7 @@ class SubjectListScreen extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(vertical: 6),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.error,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(
                   Icons.delete,
@@ -72,31 +84,75 @@ class SubjectListScreen extends StatelessWidget {
                   ),
                 );
               },
-              child: Card(
+              child: Container(
                 margin: const EdgeInsets.symmetric(vertical: 6),
-                color: theme.cardColor,
-                child: ListTile(
-                  title: Text(
-                    subject.name,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: theme.colorScheme.onSurface,
-                    ),
+                decoration: BoxDecoration(
+                  color: theme.cardColor,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border(
+                    left: BorderSide(color: gradeColor, width: 5),
                   ),
-                  subtitle: Text(
-                    'Mark: ${subject.mark.toStringAsFixed(1)}',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface,
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.colorScheme.onSurface.withOpacity(0.06),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
                     ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
                   ),
-                  trailing: CircleAvatar(
-                    backgroundColor: _gradeColor(context, subject.grade),
-                    child: Text(
-                      subject.grade,
-                      style: TextStyle(
-                        color: theme.colorScheme.onPrimary,
-                        fontWeight: FontWeight.bold,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              subject.name,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: theme.colorScheme.onSurface,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Wrap(
+                              spacing: 10,
+                              runSpacing: 4,
+                              children: [
+                                _InfoChip(
+                                  icon: Icons.score,
+                                  label: 'Mark: ${subject.mark.toStringAsFixed(1)}',
+                                  color: theme.colorScheme.onSurface
+                                      .withOpacity(0.7),
+                                ),
+                                _InfoChip(
+                                  icon: Icons.grade,
+                                  label: 'Grade: ${subject.grade}',
+                                  color: gradeColor,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 12),
+                      CircleAvatar(
+                        radius: 24,
+                        backgroundColor: gradeColor,
+                        child: Text(
+                          subject.grade,
+                          style: TextStyle(
+                            color: theme.colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -104,6 +160,37 @@ class SubjectListScreen extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+class _InfoChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _InfoChip({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: color),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: TextStyle(
+            color: color,
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 }
