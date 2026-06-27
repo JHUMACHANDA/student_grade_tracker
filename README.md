@@ -49,7 +49,7 @@ call anywhere in the app.
 
 ## How to run
 
-1. Install the [Flutter SDK](https://docs.flutter.dev/get-started/install)
+1. Install the [Flutter SDK]
    and make sure `flutter doctor` shows no blocking issues.
 2. Clone the project and install packages:
 bash
@@ -62,3 +62,14 @@ bash
 4. Run the app:
 bash
    flutter run
+5. To build a release APK:
+```bash
+   flutter build apk --release
+```
+The APK will be at `build/app/outputs/flutter-apk/app-release.apk`.
+
+## Tech
+
+- Flutter (Material 3)
+- [provider](https://pub.dev/packages/provider) for state management
+
